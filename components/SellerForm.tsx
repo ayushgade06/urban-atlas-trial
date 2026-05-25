@@ -73,7 +73,7 @@ export default function SellerForm() {
       </select>
       <input
         className="w-full rounded border p-3"
-        placeholder="Plot size"
+        placeholder="Plot size (in sq ft)"
         required
         value={form.plotSize}
         onChange={(event) => setForm({ ...form, plotSize: event.target.value })}
