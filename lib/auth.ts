@@ -1,4 +1,5 @@
-import { SignJWT, jwtVerify } from "jose";
+import { SignJWT } from "jose/jwt/sign";
+import { jwtVerify } from "jose/jwt/verify";
 
 export const AUTH_COOKIE = "urban_atlas_admin";
 
@@ -26,4 +27,3 @@ export async function verifyAdminToken(token: string | undefined) {
     return false;
   }
 }
-
