@@ -9,6 +9,9 @@ const localities = [
   "Janakipuram Extension",
 ];
 
+const field =
+  "w-full rounded-2xl border border-[#E5E7EB] bg-white px-4 py-3.5 text-sm text-[#111827] placeholder:text-[#9CA3AF] focus:outline-none focus:ring-2 focus:ring-[#FF385C]/20 focus:border-[#FF385C] transition-all appearance-none";
+
 export default function SellerForm() {
   const [form, setForm] = useState({
     name: "",
@@ -18,12 +21,12 @@ export default function SellerForm() {
     price: "",
   });
   const [loading, setLoading] = useState(false);
-  const [message, setMessage] = useState("");
+  const [status, setStatus] = useState<"idle" | "success" | "error">("idle");
 
   async function submit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     setLoading(true);
-    setMessage("");
+    setStatus("idle");
 
     const response = await fetch("/api/sellers", {
       method: "POST",
@@ -33,7 +36,7 @@ export default function SellerForm() {
 
     setLoading(false);
     if (response.ok) {
-      setMessage("Plot submitted.");
+      setStatus("success");
       setForm({
         name: "",
         phone: "",
@@ -42,58 +45,91 @@ export default function SellerForm() {
         price: "",
       });
     } else {
-      setMessage("Something went wrong.");
+      setStatus("error");
     }
   }
 
   return (
-    <form className="mt-8 space-y-4" onSubmit={submit}>
+    <form className="space-y-3" onSubmit={submit}>
+      {status === "success" && (
+        <div className="rounded-2xl border border-green-100 bg-green-50 px-4 py-3 text-sm text-green-700">
+          ✓ Plot listing submitted successfully.
+        </div>
+      )}
+      {status === "error" && (
+        <div className="rounded-2xl border border-red-100 bg-red-50 px-4 py-3 text-sm text-red-600">
+          Something went wrong. Please try again.
+        </div>
+      )}
+
       <input
-        className="w-full rounded border p-3"
-        placeholder="Name"
+        id="seller-name"
+        className={field}
+        placeholder="Full name"
         required
         value={form.name}
-        onChange={(event) => setForm({ ...form, name: event.target.value })}
+        onChange={(e) => setForm({ ...form, name: e.target.value })}
       />
       <input
-        className="w-full rounded border p-3"
-        placeholder="Phone"
+        id="seller-phone"
+        className={field}
+        placeholder="Phone number"
         required
         value={form.phone}
-        onChange={(event) => setForm({ ...form, phone: event.target.value })}
+        onChange={(e) => setForm({ ...form, phone: e.target.value })}
       />
-      <select
-        className="w-full rounded border p-3"
-        value={form.locality}
-        onChange={(event) => setForm({ ...form, locality: event.target.value })}
-      >
-        {localities.map((locality) => (
-          <option key={locality}>{locality}</option>
-        ))}
-      </select>
+      <div className="relative">
+        <select
+          id="seller-locality"
+          className={field + " pr-10 cursor-pointer"}
+          value={form.locality}
+          onChange={(e) => setForm({ ...form, locality: e.target.value })}
+        >
+          {localities.map((l) => (
+            <option key={l}>{l}</option>
+          ))}
+        </select>
+        <svg
+          className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-[#9CA3AF]"
+          width="16"
+          height="16"
+          viewBox="0 0 16 16"
+          fill="none"
+        >
+          <path
+            d="M4 6l4 4 4-4"
+            stroke="currentColor"
+            strokeWidth="1.5"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          />
+        </svg>
+      </div>
       <input
-        className="w-full rounded border p-3"
-        placeholder="Plot size (in sq ft)"
+        id="seller-plotsize"
+        className={field}
+        placeholder="Plot size (sq ft)"
         required
         value={form.plotSize}
-        onChange={(event) => setForm({ ...form, plotSize: event.target.value })}
+        onChange={(e) => setForm({ ...form, plotSize: e.target.value })}
       />
       <input
-        className="w-full rounded border p-3"
-        placeholder="Price"
+        id="seller-price"
+        className={field}
+        placeholder="Asking price (e.g. ₹85L)"
         required
         value={form.price}
-        onChange={(event) => setForm({ ...form, price: event.target.value })}
+        onChange={(e) => setForm({ ...form, price: e.target.value })}
       />
+
       <button
-        className="w-full rounded bg-accent p-3 font-medium text-white disabled:opacity-60"
+        id="seller-submit"
+        className="mt-1 w-full rounded-2xl bg-[#FF385C] py-3.5 text-sm font-medium text-white hover:bg-[#e0304f] disabled:opacity-50 transition-colors"
         disabled={loading}
         type="submit"
       >
-        {loading ? "Submitting..." : "Submit Plot"}
+        {loading ? "Submitting…" : "Submit Plot Listing"}
       </button>
-      {message && <p className="text-sm text-neutral-600">{message}</p>}
     </form>
   );
 }
-

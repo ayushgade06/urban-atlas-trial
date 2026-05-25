@@ -9,6 +9,16 @@ const config: Config = {
     extend: {
       colors: {
         accent: "#FF385C",
+        "ua-border": "#E5E7EB",
+        "ua-muted": "#FAFAFA",
+        "ua-secondary": "#6B7280",
+        "ua-primary": "#111827",
+      },
+      fontFamily: {
+        sans: ["Inter", "system-ui", "sans-serif"],
+      },
+      borderRadius: {
+        "4xl": "2rem",
       },
     },
   },
@@ -16,4 +26,3 @@ const config: Config = {
 };
 
 export default config;
-
